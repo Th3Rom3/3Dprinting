@@ -1,0 +1,28 @@
+G90 ; use absolute coordinates
+M83 ; extruder relative mode
+G28 ; home all without mesh bed level
+
+G1 X150 Y150 Z100; move extruder for easier cleaning
+M104 S155 ; set extruder temp for bed leveling
+M140 S[first_layer_bed_temperature] ; set bed temp
+M109 R155 ; wait for bed leveling temp
+M190 S[first_layer_bed_temperature] ; wait for bed temp
+
+G29 ; mesh bed leveling 
+M104 S[first_layer_temperature] ; set extruder temp
+G92 E0.0
+G1 Y-2.0 X179 F2400
+G1 Z3 F720
+M109 S[first_layer_temperature] ; wait for extruder temp
+
+; purge line
+G1 X170.0 F2000.0
+G1 Z0.3 F1000.0
+G1 X0.0 E15.0 F2200.0
+G1 Y-1.0 F1000.0
+G1 X140.0 E15 F1400.0
+G1 Z0.20 F1000.0
+G1 X160.0 E4.0 F700.0
+G92 E0.0
+
+M221 S{if layer_height<0.075}100{else}95{endif} ; set flow
